@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema({
   //email: { type: String, unique: true, required: true },
   //password: { type: String, required: true },
   providers: {
-    google: { type: String },
-    github: { type: String },
+    google: { type: String, unique: true, sparse: true },
+    github: { type: String, unique: true, sparse: true },
   },
   dashboards: [dashboardSchema], //the default is empty list?
 });

@@ -16,21 +16,26 @@ const app = express();
 //   optionsSuccessStatus: 200,
 // };
 
+app.use(
+  cors({
+    origin: process.env.APP_URL,
+  })
+);
 // app.use(cors(corsOptions));
 
-// Külön fájlba szervezve
+// Külön fájlba szervezve vagy itt ilyen formában:
 // const errorHandlerMiddleware = (err, req, res, next) => {
 //   console.log(err);
 //   res.status(500).json("Something went wrong");
 // };
 
-// Külön fájlba szervezve
+// Külön fájlba szervezve vagy itt ilyen formában:
 // const myLogger = (req, res, next) => {
 //   console.log("logging");
 //   next();
 // };
 
-// Külön fájlba szervezve
+// Külön fájlba szervezve vagy itt ilyen formában:
 // const myAuthMiddleware = (req, res, next) => {
 //   console.log("doing authentication");
 //   const userId = 12;
@@ -43,21 +48,16 @@ const app = express();
 //   console.log("business logic running");
 //   res.status(200).json("Ok");
 // };
+// app.use(myBusinessLogicMiddleware);
 
-app.use(
-  cors({
-    origin: process.env.APP_URL,
-  })
-);
 app.use(express.json());
 
-//app.use(logger); helyette morgan:
+//app.use(logger); helyette morgan-t használva:
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms")
 );
 
-// app.use(auth); - endpointonknál lefuttatni, ha nem akarom, hogy mindenhol lefusson
-// app.use(myBusinessLogicMiddleware);
+// app.use(auth); - endpointonknál kell lefuttatni, ha nem akarom, hogy mindenhol lefusson
 app.use("/api/dashboards", dashboardRoutes);
 app.use("/api/user", userRoutes);
 
