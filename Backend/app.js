@@ -77,6 +77,6 @@ app.get("/api/prublic", auth({ block: false }), (req, res) => {
 });
 
 // errorhandler middleware-t utolsóként hivjuk meg
-//app.use(errorHandler);
+app.use(errorHandler);
 
 module.exports = app;
