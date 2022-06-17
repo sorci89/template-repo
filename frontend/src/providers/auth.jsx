@@ -1,5 +1,5 @@
 import React from 'react'
-import { useContext, createContext, useState } from "react";
+import { useContext, createContext, useState, useEffect } from "react";
 const axios = require('axios')
 
 
@@ -29,17 +29,29 @@ const AuthProvider = ({children}) => {
                 provider
             })
             setToken(response.data.token)
+            localStorage.setItem("token", response.data.token)
         } catch(error) {
+            localStorage.removeItem("token")
             setToken(null)
         }
-
     }
+    
     const logout = ()=>{
         setToken(null)
+        localStorage.removeItem("token")
     };
     
     const contextValue = {token, auth, logout, login};
     
+
+    useEffect(() => {
+      const token = localStorage.getItem("token")
+      if (token) {
+        setToken(token)
+      }
+    }, [])
+    
+
     return (
         <AuthContext.Provider value={contextValue}>
             {children}
@@ -51,6 +63,8 @@ const useAuth = () => {
     const context = useContext(AuthContext);
     if(!context) throw new Error("Add AuthProvider to root")
 return context
+
+
 }
 
 export {AuthProvider,useAuth}
