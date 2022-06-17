@@ -1,19 +1,20 @@
-import React, { useEffect} from 'react'
+import React from 'react'
 import { useAuth } from '../providers/auth'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useLocation } from 'react-router-dom'
 
 const Protected = ({children}) => {
-  const {token} = useAuth()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    if (!token) {
-    navigate("/")
-    }
-  }, [token]);
+  const {token, user} = useAuth()
+  const location = useLocation()
+  
 
   return (
-    <React.Fragment>{children}</React.Fragment>
+    <React.Fragment>
+      {!token ? (
+      <Navigate to={"/"} />
+      ) :!user.userId && location.pathname !== "/register" ? (
+      <Navigate to={"/register"} /> 
+      ) : (children)}
+      </React.Fragment>
   )
 }
 

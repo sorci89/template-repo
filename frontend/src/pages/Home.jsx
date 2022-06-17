@@ -9,6 +9,7 @@ const Home = () => {
   const {value, increment: goUp, decrement: goDown} = useGlobalCounter()
   const {auth, token} = useAuth()
 
+
   return (
     <div>Home
        <p>{token ? "Logged in" : "Anonymus"}</p>
@@ -20,7 +21,7 @@ const Home = () => {
         <button onClick={()=> goUp()}>+</button>
         <button onClick={()=> goDown()}>-</button>
 
-        <button onClick={auth}>Login with Google</button>
+        {token ? "Welcome" : (<button onClick={auth}>Login with Google</button>)}
     </div>
   )
 }

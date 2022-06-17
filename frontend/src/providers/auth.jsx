@@ -1,12 +1,16 @@
 import React from 'react'
 import { useContext, createContext, useState, useEffect } from "react";
-const axios = require('axios')
+import axios from 'axios'
+import jwt from "jwt-decode"
+import { toDoApi } from '../api/toDoApi'
 
 
 const AuthContext = createContext();
 
 const AuthProvider = ({children}) => {
     const [token, setToken] = useState(null)
+    const [user, setUser] = useState(null)
+    const { post } = toDoApi()
 
     const auth = ()=> {
         const googleBaseUrl = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -19,9 +23,10 @@ const AuthProvider = ({children}) => {
 
         const fullUrl = googleBaseUrl + "?" + searchParams.toString()
     
-        window.open(fullUrl)
+        window.location.href = fullUrl
     };
 
+    
     const login = async(code, provider) => {
         try{
             const response = await axios.post("http://localhost:4000/api/user/login", {
@@ -30,6 +35,8 @@ const AuthProvider = ({children}) => {
             })
             setToken(response.data.token)
             localStorage.setItem("token", response.data.token)
+            setUser(jwt(response.data.token));
+    
         } catch(error) {
             localStorage.removeItem("token")
             setToken(null)
@@ -41,13 +48,26 @@ const AuthProvider = ({children}) => {
         localStorage.removeItem("token")
     };
     
-    const contextValue = {token, auth, logout, login};
+
+    const register = async(username)=> {
+        const response = await post("/user/create", {username});
+  
+        if (response?.status === 200) {
+            setToken(response.data.token)
+            localStorage.setItem("token", response.data.token)
+            setUser(jwt(response.data.token));
+        }
+                  
+    }
+
+    const contextValue = {token, auth, logout, login, user, register};
     
 
     useEffect(() => {
-      const token = localStorage.getItem("token")
-      if (token) {
-        setToken(token)
+      const tokenInStorage = localStorage.getItem("token")
+      if (tokenInStorage) {
+        setToken(tokenInStorage)
+        setUser(jwt(tokenInStorage))
       }
     }, [])
     
